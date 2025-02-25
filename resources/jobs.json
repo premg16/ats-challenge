@@ -1,0 +1,144 @@
+{
+  "jobRoles": [
+    {
+      "id": 6,
+      "title": "Electrician",
+      "company": "PowerTech Services",
+      "location": "Sydney, Australia",
+      "description": "Install, maintain, and repair electrical systems in residential and commercial buildings.",
+      "responsibilities": [
+        "Install and maintain electrical wiring systems",
+        "Troubleshoot electrical issues and perform repairs",
+        "Read and interpret electrical blueprints"
+      ],
+      "technicalRequirements": [
+        "Valid Electrical License",
+        "Experience with electrical testing equipment",
+        "Knowledge of Australian electrical codes"
+      ],
+      "softSkills": [
+        "Problem-solving ability",
+        "Attention to safety protocols",
+        "Good communication skills"
+      ],
+      "experience": "Minimum 3 years post-qualification experience",
+      "education": "Certificate III in Electrotechnology Electrician",
+      "additionalCriteria": {
+        "hourlyRate": "AUD 35 - 45",
+        "shiftTimings": "Standard business hours with on-call rotation"
+      }
+    },
+    {
+      "id": 7,
+      "title": "HVAC Technician",
+      "company": "Cool Climate Systems",
+      "location": "Brisbane, Australia",
+      "description": "Service and install heating, ventilation, and air conditioning systems in commercial and residential settings.",
+      "responsibilities": [
+        "Install and repair HVAC systems",
+        "Perform preventive maintenance",
+        "Diagnose mechanical and electrical problems"
+      ],
+      "technicalRequirements": [
+        "ARC License",
+        "Experience with various HVAC systems",
+        "Knowledge of refrigeration principles"
+      ],
+      "softSkills": [
+        "Technical troubleshooting",
+        "Customer service orientation",
+        "Time management"
+      ],
+      "experience": "Minimum 2 years HVAC experience",
+      "education": "Certificate III in Air Conditioning and Refrigeration",
+      "additionalCriteria": {
+        "hourlyRate": "AUD 32 - 40",
+        "shiftTimings": "Full-time with emergency call-outs"
+      }
+    },
+    {
+      "id": 8,
+      "title": "Plumber",
+      "company": "FlowRight Plumbing",
+      "location": "Melbourne, Australia",
+      "description": "Install and repair plumbing systems in residential and commercial properties.",
+      "responsibilities": [
+        "Install and repair pipes and fixtures",
+        "Diagnose and fix plumbing issues",
+        "Maintain drainage systems"
+      ],
+      "technicalRequirements": [
+        "Valid Plumbing License",
+        "Experience with various plumbing tools",
+        "Knowledge of plumbing codes"
+      ],
+      "softSkills": [
+        "Problem-solving skills",
+        "Physical dexterity",
+        "Customer service"
+      ],
+      "experience": "Minimum 2 years licensed experience",
+      "education": "Certificate III in Plumbing",
+      "additionalCriteria": {
+        "hourlyRate": "AUD 30 - 40",
+        "shiftTimings": "Regular hours plus emergency services"
+      }
+    },
+    {
+      "id": 9,
+      "title": "Diesel Mechanic",
+      "company": "Heavy Equipment Services",
+      "location": "Perth, Australia",
+      "description": "Maintain and repair diesel engines in trucks, heavy equipment, and industrial machinery.",
+      "responsibilities": [
+        "Diagnose and repair diesel engines",
+        "Perform preventive maintenance",
+        "Test and adjust repaired systems"
+      ],
+      "technicalRequirements": [
+        "Experience with diagnostic equipment",
+        "Knowledge of diesel engine systems",
+        "Heavy vehicle license"
+      ],
+      "softSkills": [
+        "Mechanical aptitude",
+        "Analytical thinking",
+        "Team collaboration"
+      ],
+      "experience": "3-5 years diesel mechanic experience",
+      "education": "Certificate III in Heavy Commercial Vehicle Mechanical Technology",
+      "additionalCriteria": {
+        "hourlyRate": "AUD 35 - 45",
+        "shiftTimings": "Day shifts with overtime available"
+      }
+    },
+    {
+      "id": 10,
+      "title": "Welder",
+      "company": "MetalWorks Industries",
+      "location": "Adelaide, Australia",
+      "description": "Perform various welding techniques to join metal components in manufacturing and construction.",
+      "responsibilities": [
+        "Execute various welding processes (MIG, TIG, Stick)",
+        "Read and interpret technical drawings",
+        "Maintain welding equipment"
+      ],
+      "technicalRequirements": [
+        "Welding certification",
+        "Experience with multiple welding techniques",
+        "Knowledge of metal properties"
+      ],
+      "softSkills": [
+        "Hand-eye coordination",
+        "Attention to detail",
+        "Safety consciousness"
+      ],
+      "experience": "Minimum 2 years welding experience",
+      "education": "Certificate III in Engineering - Fabrication Trade",
+      "additionalCriteria": {
+        "hourlyRate": "AUD 28 - 38",
+        "shiftTimings": "Full-time with possible shift work"
+      }
+    }
+  ]
+}

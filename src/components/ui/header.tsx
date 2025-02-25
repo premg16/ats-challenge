@@ -5,12 +5,10 @@ import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import { Input } from "./input";
-import { Textarea } from "./textarea";
-
 import Notifications from "./notifications";
 import { Sun, Moon, X, Upload } from "lucide-react";
 import Modal from "./modal";
-import { addJobRoles } from "@/lib/prisma/addJobs";
+import { addJobs } from "@/lib/prisma/jobs/addJobs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Label } from "./label";
 
 const FileUploadSchema = z.object({
   file: z.instanceof(File, { message: "Please select a file" }),
@@ -103,7 +100,7 @@ export default function Header() {
         case "json":
           try {
             const { jobRoles } = JSON.parse(fileContent);
-            jobData = jobRoles ;
+            jobData = jobRoles;
           } catch (e) {
             throw new Error("Invalid JSON format");
           }
@@ -196,7 +193,7 @@ export default function Header() {
         };
       });
 
-      await addJobRoles(formattedJobs);
+      await addJobs(formattedJobs);
       handleCloseModal();
     } catch (error) {
       console.error("Error processing file:", error);
@@ -214,17 +211,7 @@ export default function Header() {
         <span className="font-bold text-xl text-foreground">Recruit Raid</span>
       </div>
 
-      <div className="flex-1 mx-4">
-        <Input type="text" placeholder="Search" className="w-full" />
-      </div>
-
       <div className="flex items-center space-x-4">
-        <Button
-          className="bg-brand-green hover:bg-brand-green/90 text-white"
-          onClick={handleAddJobClick}
-        >
-          Add Job
-        </Button>
         <button className="relative text-muted-foreground hover:text-foreground transition-colors">
           <Notifications />
           <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-destructive rounded-full"></span>
@@ -245,95 +232,6 @@ export default function Header() {
           </AvatarFallback>
         </Avatar>
       </div>
-
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <div className="bg-background p-6 rounded-lg shadow-lg">
-          <div className="flex justify-between items-center border-b pb-3 gap-4">
-            <h2 className="text-xl font-semibold text-foreground">
-              Add New Job
-            </h2>
-            <button onClick={handleCloseModal} aria-label="Close">
-              <X
-                size={20}
-                className="text-muted-foreground hover:text-destructive transition-colors"
-              />
-            </button>
-          </div>
-          <div>
-            <h3 className="text-md font-medium text-foreground mb-2">
-              Upload Job File
-            </h3>
-            <Form {...fileForm}>
-              <form
-                onSubmit={fileForm.handleSubmit(handleFileSubmit)}
-                className="space-y-4"
-              >
-                <div className="flex justify-center">
-                  <FormField
-                    control={fileForm.control}
-                    name="uploadType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="flex flex-col gap-2">
-                            <Label
-                              htmlFor="file-upload"
-                              className="flex items-center gap-2 cursor-pointer bg-secondary p-4 rounded-lg border-2 border-dashed border-muted-foreground hover:border-primary transition-colors"
-                            >
-                              <Upload size={16} className="mr-2" />
-                              Click to select a file (.json, .csv, or .excel)
-                            </Label>
-                            <Input
-                              id="file-upload"
-                              type="file"
-                              accept=".json,.csv,.xlsx,.xls"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  const fileExtension = file.name
-                                    .split(".")
-                                    .pop()
-                                    ?.toLowerCase();
-                                  if (
-                                    fileExtension === "json" ||
-                                    fileExtension === "csv" ||
-                                    fileExtension === "xlsx" ||
-                                    fileExtension === "xls"
-                                  ) {
-                                    fileForm.setValue("file", file);
-                                    field.onChange(
-                                      fileExtension === "xlsx" ||
-                                        fileExtension === "xls"
-                                        ? "excel"
-                                        : (fileExtension as
-                                            | "json"
-                                            | "csv"
-                                            | "excel")
-                                    );
-                                  }
-                                }
-                              }}
-                              className="hidden"
-                            />
-                            <Button
-                              type="submit"
-                              className="bg-brand-green hover:bg-brand-green/90 text-white w-full"
-                            >
-                              <Upload size={16} className="mr-2" />
-                              Upload Selected File
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </form>
-            </Form>
-          </div>
-        </div>
-      </Modal>
     </header>
   );
 }

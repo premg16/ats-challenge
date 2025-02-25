@@ -1,11 +1,7 @@
-"use client"
+import { getJobs } from "@/lib/prisma/jobs/getJobs";
+import DashboardView from "@/components/views/dashboard-view";
 
-import Header from "@/components/ui/header";
-
-export default function Page() {
-  return (
-    <main>
-      <Header/>
-    </main>
-  );
+export default async function Page() {
+  const jobs = await getJobs();
+  return <DashboardView jobs={jobs} />;
 }

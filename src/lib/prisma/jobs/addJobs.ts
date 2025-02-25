@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function addJobRoles(jobRoles: Array<{
+export async function addJobs(jobs: Array<{
   title: string;
   company: string;
   location: string;
@@ -16,15 +16,37 @@ export async function addJobRoles(jobRoles: Array<{
   additionalCriteria: any;
 }>) {
   try {
-    // Insert job roles into the database
-    console.log("jobRoles", jobRoles);
-    const result = await prisma.jobRole.createMany({
-      data: jobRoles,
-      skipDuplicates: true, // Optional: skips duplicates based on unique constraints
+    const newJobs = [];
+    
+    for (const job of jobs) {
+      // Check if job already exists based on title, company, and location
+      const existingJob = await prisma.jobs.findFirst({
+        where: {
+          AND: [
+            { title: job.title },
+            { company: job.company },
+            { location: job.location }
+          ]
+        }
+      });
+
+      if (!existingJob) {
+        newJobs.push(job);
+      }
+    }
+
+    // Only insert jobs that don't exist
+    const result = await prisma.jobs.createMany({
+      data: newJobs,
     });
-    console.log(`${result.count} job roles added successfully.`);
+    
+    return {
+      count: result.count,
+      message: `${result.count} new jobs added successfully. ${jobs.length - result.count} jobs were duplicates.`
+    };
   } catch (error) {
-    console.error('Error adding job roles:', error);
+    console.error('Error adding jobs:', error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }

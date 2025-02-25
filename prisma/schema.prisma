@@ -8,7 +8,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model jobRole {
+model Jobs {
   id                    Int      @id @default(autoincrement())
   title                 String
   company               String
@@ -20,4 +20,79 @@ model jobRole {
   experience            String
   education             String
   additionalCriteria    Json
+  applications          JobApplication[]
+}
+
+model Applicant {
+  id                Int      @id @default(autoincrement())
+  name              String
+  email             String   @unique
+  phone             String?
+  skills            String[]
+  technicalSkills   String[]
+  softSkills        String[]
+  
+  // Work Experience
+  workExperience    WorkExperience[]
+  
+  // Education
+  education         Education[]
+  certifications    String[]
+  
+  // Additional Info
+  resumeUrl         String    // URL to stored resume
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Matching scores for jobs
+  jobApplications   JobApplication[]
+}
+
+model WorkExperience {
+  id              Int       @id @default(autoincrement())
+  jobTitle        String
+  company         String
+  location        String?
+  startDate       DateTime
+  endDate         DateTime?
+  isCurrentJob    Boolean   @default(false)
+  responsibilities String[]
+  
+  // Relations
+  applicant       Applicant @relation(fields: [applicantId], references: [id])
+  applicantId     Int
+}
+
+model Education {
+  id              Int       @id @default(autoincrement())
+  degree          String
+  institution     String
+  location        String?
+  startDate       DateTime
+  endDate         DateTime?
+  isCompleted     Boolean   @default(true)
+  
+  // Relations
+  applicant       Applicant @relation(fields: [applicantId], references: [id])
+  applicantId     Int
+}
+
+model JobApplication {
+  id              Int       @id @default(autoincrement())
+  overallScore    Float     // Overall match score
+  skillsScore     Float     // 40% weight
+  experienceScore Float     // 30% weight
+  educationScore  Float     // 20% weight
+  softSkillsScore Float     // 10% weight
+  status          String    @default("PENDING") // PENDING, REVIEWED, ACCEPTED, REJECTED
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  applicant       Applicant @relation(fields: [applicantId], references: [id])
+  applicantId     Int
+  job             Jobs  @relation(fields: [jobId], references: [id])
+  jobId           Int
+
+  @@unique([applicantId, jobId])
 }
