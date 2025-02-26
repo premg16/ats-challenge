@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ATS Challenge",
+  title: "Recruit Raid",
   description: "ATS Challenge",
 };
 import { ThemeProvider } from "@/components/theme-provider";
