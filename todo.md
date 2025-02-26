@@ -1,1 +1,2 @@
 - [] Fix bugs in drag drop
+- function takes applicant and job objs -> returns compatibility scores
