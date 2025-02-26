@@ -1,206 +1,26 @@
 "use client";
 
-import { useState } from "react";
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
-import { Input } from "./input";
 import Notifications from "./notifications";
-import { Sun, Moon, X, Upload } from "lucide-react";
-import Modal from "./modal";
-import { addJobs } from "@/lib/prisma/jobs/addJobs";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Sun, Moon } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const FileUploadSchema = z.object({
-  file: z.instanceof(File, { message: "Please select a file" }),
-  uploadType: z.enum(["json", "csv", "excel"], {
-    required_error: "Please select a file type",
-  }),
-});
-// Update the JobFormSchema to match Prisma schema
-const JobFormSchema = z.object({
-  title: z.string().min(2, "Job title must be at least 2 characters"),
-  company: z.string().min(2, "Company name must be at least 2 characters"),
-  location: z.string().min(2, "Location is required"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  responsibilities: z.array(z.string()).default([]),
-  technicalRequirements: z.array(z.string()).default([]),
-  softSkills: z.array(z.string()).default([]),
-  experience: z.string().min(1, "Experience level is required"),
-  education: z.string().default(""),
-  additionalCriteria: z.object({
-    hourlyRate: z.string().default(""),
-    shiftTiminig: z.string().default(""),
-  }),
-});
-type FileUploadForm = z.infer<typeof FileUploadSchema>;
-type JobForm = z.infer<typeof JobFormSchema>;
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const fileForm = useForm<FileUploadForm>({
-    resolver: zodResolver(FileUploadSchema),
-  });
+  // useEffect runs only on client side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const jobForm = useForm<JobForm>({
-    resolver: zodResolver(JobFormSchema),
-    defaultValues: {
-      responsibilities: [],
-      technicalRequirements: [],
-      softSkills: [],
-      title: "",
-      company: "",
-      location: "",
-      description: "",
-      experience: "",
-      education: "",
-      additionalCriteria: {
-        hourlyRate: "",
-        shiftTiminig: "",
-      },
-    },
-  });
-
-  const handleAddJobClick = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    fileForm.reset();
-    jobForm.reset();
-  };
-
-  const handleFileSubmit = async (data: FileUploadForm) => {
-    try {
-      let jobData;
-
-      if (data.uploadType === "excel") {
-        const arrayBuffer = await data.file.arrayBuffer();
-        // Here you would use a library like xlsx to parse Excel files
-        // For example: const workbook = XLSX.read(arrayBuffer);
-        throw new Error("Excel parsing not implemented");
-      }
-
-      const fileContent = await data.file.text();
-
-      switch (data.uploadType) {
-        case "json":
-          try {
-            const { jobRoles } = JSON.parse(fileContent);
-            jobData = jobRoles;
-          } catch (e) {
-            throw new Error("Invalid JSON format");
-          }
-          break;
-
-        case "csv":
-          try {
-            // Handle CSV with potential quoted values and escaped commas
-            const parseCSVLine = (line: string) => {
-              const values = [];
-              let current = "";
-              let inQuotes = false;
-
-              for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (char === '"') {
-                  inQuotes = !inQuotes;
-                } else if (char === "," && !inQuotes) {
-                  values.push(current.trim());
-                  current = "";
-                } else {
-                  current += char;
-                }
-              }
-              values.push(current.trim());
-              return values;
-            };
-
-            const rows = fileContent.split(/\r?\n/).filter((row) => row.trim());
-            const headers = parseCSVLine(rows[0]);
-
-            jobData = rows.slice(1).map((row) => {
-              const values = parseCSVLine(row);
-              return headers.reduce((obj: any, header, index) => {
-                const cleanHeader = header.replace(/^["']|["']$/g, "").trim();
-                obj[cleanHeader] =
-                  values[index]?.replace(/^["']|["']$/g, "").trim() || "";
-                return obj;
-              }, {});
-            });
-          } catch (e) {
-            throw new Error("Invalid CSV format");
-          }
-          break;
-
-        default:
-          throw new Error(`Unsupported file type: ${data.uploadType}`);
-      }
-
-      // Validate and format job data
-      if (!Array.isArray(jobData)) {
-        jobData = [jobData];
-      }
-
-      const formattedJobs = jobData.map((job: any) => {
-        // Ensure required fields exist
-        if (!job.title) {
-          throw new Error("Job title is required");
-        }
-        if (!job.company) {
-          throw new Error("Company name is required");
-        }
-
-        return {
-          title: job.title,
-          company: job.company,
-          location: job.location || "",
-          description: job.description || "",
-          responsibilities: Array.isArray(job.responsibilities)
-            ? job.responsibilities
-            : job.responsibilities
-            ? [job.responsibilities]
-            : [],
-          technicalRequirements: Array.isArray(job.technicalRequirements)
-            ? job.technicalRequirements
-            : job.technicalRequirements
-            ? [job.technicalRequirements]
-            : [],
-          softSkills: Array.isArray(job.softSkills)
-            ? job.softSkills
-            : job.softSkills
-            ? [job.softSkills]
-            : [],
-          experience: job.experience || job.experienceLevel || "",
-          education: job.education || "",
-          additionalCriteria: {
-            hourlyRate: job.hourlyRate || "",
-            shiftTimings: job.shiftTimings || "",
-          },
-        };
-      });
-
-      await addJobs(formattedJobs);
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error processing file:", error);
-      // Here you might want to show an error message to the user
-      throw error;
-    }
-  };
+  // Prevent flash of incorrect theme
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <header className="flex items-center justify-between p-4 bg-background border-b border-border">
