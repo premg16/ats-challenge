@@ -13,8 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { JobMatchCard } from "@/components/job-match-card";
 import {
   ArrowLeft,
   BookOpen,
@@ -130,131 +130,7 @@ const CandidatePage: FC = () => {
                   (a, b) => b.analysis.overallScore - a.analysis.overallScore
                 )
                 .map((match, index) => (
-                  <Card key={index}>
-                    <CardHeader>
-                      <div className="flex justify-between items-center">
-                        <CardTitle>{match.jobTitle}</CardTitle>
-                        <Badge variant={"outline"}>
-                          {Math.round(match.analysis.overallScore)}% Match
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {/* Score Breakdown */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Technical Skills</span>
-                            <span>
-                              {match.analysis.technicalSkillsMatch.score}%
-                            </span>
-                          </div>
-                          <Progress
-                            value={match.analysis.technicalSkillsMatch.score}
-                            className={`${
-                              match.analysis.technicalSkillsMatch.score >= 80
-                                ? "bg-green-100 [&>div]:bg-green-500"
-                                : match.analysis.technicalSkillsMatch.score >= 60
-                                ? "bg-yellow-100 [&>div]:bg-yellow-500"
-                                : "bg-red-100 [&>div]:bg-red-500"
-                            }`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Soft Skills</span>
-                            <span>{match.analysis.softSkillsMatch.score}%</span>
-                          </div>
-                          <Progress
-                            value={match.analysis.softSkillsMatch.score}
-                            className={`${
-                              match.analysis.softSkillsMatch.score >= 80
-                                ? "bg-green-100 [&>div]:bg-green-500"
-                                : match.analysis.softSkillsMatch.score >= 60
-                                ? "bg-yellow-100 [&>div]:bg-yellow-500"
-                                : "bg-red-100 [&>div]:bg-red-500"
-                            }`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Experience</span>
-                            <span>{match.analysis.experienceMatch.score}%</span>
-                          </div>
-                          <Progress
-                            value={match.analysis.experienceMatch.score}
-                            className={`${
-                              match.analysis.experienceMatch.score >= 80
-                                ? "bg-green-100 [&>div]:bg-green-500"
-                                : match.analysis.experienceMatch.score >= 60
-                                ? "bg-yellow-100 [&>div]:bg-yellow-500"
-                                : "bg-red-100 [&>div]:bg-red-500"
-                            }`}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Education</span>
-                            <span>{match.analysis.educationMatch.score}%</span>
-                          </div>
-                          <Progress
-                            value={match.analysis.educationMatch.score}
-                            className={`${
-                              match.analysis.educationMatch.score >= 80
-                                ? "bg-green-100 [&>div]:bg-green-500"
-                                : match.analysis.educationMatch.score >= 60
-                                ? "bg-yellow-100 [&>div]:bg-yellow-500"
-                                : "bg-red-100 [&>div]:bg-red-500"
-                            }`}
-                          />
-                        </div>
-                      </div>
-
-                      <Separator />
-
-                      {/* Key Highlights & Gaps */}
-                      <div className="grid grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="font-semibold mb-2">
-                            Key Matching Highlights
-                          </h4>
-                          <ul className="list-disc list-inside space-y-1 text-sm">
-                            {match.analysis.keyMatchingHighlights.map(
-                              (highlight, i) => (
-                                <li key={i} className="text-green-600">
-                                  {highlight}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2">Key Gaps</h4>
-                          <ul className="list-disc list-inside space-y-1 text-sm">
-                            {match.analysis.keyGaps.length > 0 ? (
-                              match.analysis.keyGaps.map((gap, i) => (
-                                <li key={i} className="text-red-500">
-                                  {gap}
-                                </li>
-                              ))
-                            ) : (
-                              <li className="text-red-500">No Gaps Found</li>
-                            )}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <Separator />
-
-                      {/* Detailed Analysis */}
-                      <div>
-                        <h4 className="font-semibold mb-2">Analysis Summary</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {match.analysis.justification}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <JobMatchCard key={index} match={match} />
                 ))}
             </div>
           </TabsContent>

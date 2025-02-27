@@ -8,13 +8,17 @@ import { Toaster } from "@/components/ui/sonner";
 export default function Dashboard() {
   const { results, setResults } = useCandidateStore();
 
-  const handleCVUpload = async (results: ProcessingResult[]) => {
-    console.log("Results", results);
-    //  remove errors from results and return clean results object
-    const filteredResults = results.filter((result) => !result.error);
-    const errors = results.filter((result) => result.error);
-    filteredResults.length > 0 && setResults(filteredResults);
-    errors.map((error) => toast.error(error.error))
+  const handleCVUpload = async (newResults: ProcessingResult[]) => {
+    console.log("Results", newResults);
+    //  remove errors from results and return clean results object and also dont add that result to state if there is an error
+
+    const filteredResults = newResults.filter(
+      (result) => !result.error && Object.keys(result).length > 0
+    );
+
+    const errors = newResults.filter((result) => result.error);
+    filteredResults.length > 0 && setResults([...results, ...filteredResults]);
+    errors.map((error) => toast.error(error.error));
   };
 
   return (
