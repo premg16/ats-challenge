@@ -1,58 +1,58 @@
 {
-  "jobRoles": [
-    {
-      "title": "Carpenter",
-      "company": "BuildCraft Solutions",
-      "location": "Gold Coast, Australia",
-      "description": "Construct, install, and repair wooden structures and fixtures in residential and commercial buildings.",
-      "responsibilities": [
-        "Build and install wooden structures and fixtures",
-        "Read and work from construction blueprints",
-        "Maintain woodworking tools and equipment"
-      ],
-      "technicalRequirements": [
-        "Proficiency with power tools and hand tools",
-        "Knowledge of different wood types and materials",
-        "Experience with measuring and cutting precision"
-      ],
-      "softSkills": [
-        "Attention to detail",
-        "Problem-solving ability",
-        "Team coordination"
-      ],
-      "experience": "Minimum 2 years carpentry experience",
-      "education": "Certificate III in Carpentry",
-      "additionalCriteria": {
-        "hourlyRate": "AUD 30 - 40",
-        "shiftTimings": "Standard business hours with occasional overtime"
-      }
-    },
-    {
-      "title": "Auto Mechanic",
-      "company": "Premium Auto Care",
-      "location": "Hobart, Australia",
-      "description": "Diagnose, repair, and maintain various types of vehicles using mechanical expertise and diagnostic equipment.",
-      "responsibilities": [
-        "Perform vehicle diagnostics and repairs",
-        "Conduct routine maintenance services",
-        "Test and adjust automotive systems"
-      ],
-      "technicalRequirements": [
-        "Experience with diagnostic equipment",
-        "Knowledge of various vehicle systems",
-        "Familiarity with automotive electronics"
-      ],
-      "softSkills": [
-        "Diagnostic reasoning",
-        "Customer service skills",
-        "Technical documentation"
-      ],
-      "experience": "Minimum 2 years automotive repair experience",
-      "education": "Certificate III in Light Vehicle Mechanical Technology",
-      "additionalCriteria": {
-        "hourlyRate": "AUD 28 - 38",
-        "shiftTimings": "Full-time with rotating Saturday shifts"
-      }
-    }
-  ]
+    "jobRoles": [
+        {
+            "title": "Carpenter",
+            "company": "BuildCraft Solutions",
+            "location": "Gold Coast, Australia",
+            "description": "Construct, install, and repair wooden structures and fixtures in residential and commercial buildings.",
+            "responsibilities": [
+                "Build and install wooden structures and fixtures",
+                "Read and work from construction blueprints",
+                "Maintain woodworking tools and equipment"
+            ],
+            "technicalRequirements": [
+                "Proficiency with power tools and hand tools",
+                "Knowledge of different wood types and materials",
+                "Experience with measuring and cutting precision"
+            ],
+            "softSkills": [
+                "Attention to detail",
+                "Problem-solving ability",
+                "Team coordination"
+            ],
+            "experience": "Minimum 2 years carpentry experience",
+            "education": "Certificate III in Carpentry",
+            "additionalCriteria": {
+                "hourlyRate": "AUD 30 - 40",
+                "shiftTimings": "Standard business hours with occasional overtime"
+            }
+        },
+        {
+            "title": "Auto Mechanic",
+            "company": "Premium Auto Care",
+            "location": "Hobart, Australia",
+            "description": "Diagnose, repair, and maintain various types of vehicles using mechanical expertise and diagnostic equipment.",
+            "responsibilities": [
+                "Perform vehicle diagnostics and repairs",
+                "Conduct routine maintenance services",
+                "Test and adjust automotive systems"
+            ],
+            "technicalRequirements": [
+                "Experience with diagnostic equipment",
+                "Knowledge of various vehicle systems",
+                "Familiarity with automotive electronics"
+            ],
+            "softSkills": [
+                "Diagnostic reasoning",
+                "Customer service skills",
+                "Technical documentation"
+            ],
+            "experience": "Minimum 2 years automotive repair experience",
+            "education": "Certificate III in Light Vehicle Mechanical Technology",
+            "additionalCriteria": {
+                "hourlyRate": "AUD 28 - 38",
+                "shiftTimings": "Full-time with rotating Saturday shifts"
+            }
+        }
+    ]
 }
