@@ -6,17 +6,30 @@ import { Button } from "./button";
 import Notifications from "./notifications";
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 
 export default function Header() {
+  const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
+  
   // useEffect runs only on client side
   useEffect(() => {
     setMounted(true);
   }, []);
-
+  
+  if (
+    pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password"
+  ) {
+    return <></>;
+  }
+  
   // Prevent flash of incorrect theme
   if (!mounted) {
     return null;
