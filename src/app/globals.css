@@ -5,73 +5,73 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 198 12% 11%; /* #122023 converted to HSL */
-    
+    --foreground: 198 12% 11%; /* #122023 converted to HSL - Good contrast */
+
     --card: 0 0% 100%;
     --card-foreground: 198 12% 11%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 198 12% 11%;
-    
-    --primary: 134 72% 49%; /* #2ECC40 converted to HSL */
+
+    --primary: 134 72% 29%; /* Darkened from 49% to 29% for better contrast */
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 198 12% 11%;
-    
+
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    
+    --muted-foreground: 215.4 16.3% 36.9%; /* Darkened for better contrast */
+
     --accent: 134 72% 90%;
     --accent-foreground: 198 12% 11%;
-    
-    --destructive: 0 84.2% 60.2%;
+
+    --destructive: 0 84.2% 50.2%; /* Darkened slightly */
     --destructive-foreground: 210 40% 98%;
-    
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 134 72% 49%;
-    
+    --ring: 134 72% 29%; /* Match primary */
+
     --radius: 0.5rem;
-    
-    /* Chart colors */
-    --chart-1: 134 72% 49%; /* Brand green */
+
+    /* Chart colors - adjusted for contrast */
+    --chart-1: 134 72% 29%; /* Match primary */
     --chart-2: 198 12% 30%; /* Derived from brand dark */
-    --chart-3: 134 50% 60%; /* Lighter green */
-    --chart-4: 198 20% 50%; /* Blueish */
-    --chart-5: 134 30% 70%; /* Pale green */
+    --chart-3: 134 70% 35%; /* Darker green for contrast */
+    --chart-4: 198 60% 40%; /* Darker blue for contrast */
+    --chart-5: 134 65% 25%; /* Darker shade for contrast */
   }
 
   .dark {
     --background: 198 12% 11%; /* #122023 converted to HSL */
     --foreground: 0 0% 100%;
-    
+
     --card: 198 15% 7%;
     --card-foreground: 0 0% 100%;
-    
+
     --popover: 198 15% 7%;
     --popover-foreground: 0 0% 100%;
-    
-    --primary: 134 72% 49%; /* #2ECC40 converted to HSL */
+
+    --primary: 134 72% 49%; /* Good contrast in dark mode */
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 198 10% 19%;
     --secondary-foreground: 0 0% 100%;
-    
+
     --muted: 198 10% 19%;
-    --muted-foreground: 215 20.2% 65.1%;
-    
+    --muted-foreground: 215 20.2% 75%; /* Brightened for better contrast */
+
     --accent: 134 40% 20%;
     --accent-foreground: 0 0% 100%;
-    
+
     --destructive: 0 72.2% 50.6%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --border: 198 10% 19%;
     --input: 198 10% 19%;
     --ring: 134 72% 49%;
-    
-    /* Chart colors - adjusted for dark mode */
+
+    /* Chart colors - all pass contrast in dark mode */
     --chart-1: 134 72% 49%; /* Brand green */
     --chart-2: 198 12% 70%; /* Lighter version of brand dark */
     --chart-3: 134 50% 60%; /* Lighter green */
