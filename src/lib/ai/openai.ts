@@ -1,12 +1,13 @@
 "use server"
 import { ChatOpenAI } from "@langchain/openai";
 import { SystemMessage, HumanMessage } from "@langchain/core/messages";
+import { openAIApiKey, openAIModel } from "../constants";
 
 export async function OpenAI(system_prompt:string, text: string): Promise<any> {
   try {
     const model = new ChatOpenAI({
-      openAIApiKey: process.env.OPENAI_API_KEY,
-      model: "gpt-4o-mini",
+      openAIApiKey: openAIApiKey,
+      model: openAIModel,
       temperature: 0,
     });
 

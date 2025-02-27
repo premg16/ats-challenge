@@ -4,67 +4,6 @@ import { calculateMatchScores } from "@/lib/matching";
 import jobRolesData from "../../../resources/job-roles.json";
 import { extractDetails } from "@/lib/extract";
 
-interface JobMatch {
-  jobTitle: string;
-  score: number;
-}
-
-interface CandidateResult {
-  candidateDetails: CandidateSchema;
-  jobMatches: JobMatch[];
-}
-
-interface CandidateSchema {
-  personalDetails: {
-    name: string;
-    contact: string;
-    email: string;
-    location: string;
-    role: string;
-  };
-  skills: {
-    technical: string[];
-    soft: string[];
-  };
-  experience: [
-    {
-      jobTitle: string;
-      company: string;
-      location: string;
-      duration: {
-        startDate: string;
-        endDate: string;
-      };
-      responsibilities: string[];
-      achievements: string[];
-    }
-  ];
-  education: [
-    {
-      degree: string;
-      institution: string;
-      year: string;
-    }
-  ];
-  certifications: [
-    {
-      name: string;
-      issuer: string;
-      year: string;
-    }
-  ];
-  additionalInfo: {
-    availability: string;
-    desiredSalary: string;
-    location: string;
-  };
-}
-
-interface ProcessingResult {
-  candidates: CandidateResult[];
-  error?: string;
-}
-
 export async function processCVs(
   files: File[],
   provider: "openai" | "gemini"
@@ -84,10 +23,10 @@ export async function processCVs(
           const parsedCV = await extractDetails(cvText, provider);
 
           // Calculate match scores and group them
-          const matchScores : JobMatch[] = await Promise.all(
+          const analysis: JobMatch[] = await Promise.all(
             jobs.map(async (job) => ({
               jobTitle: job.title,
-              score: await calculateMatchScores(parsedCV, job, provider),
+              analysis: await calculateMatchScores(parsedCV, job, provider),
             }))
           );
 
@@ -96,7 +35,7 @@ export async function processCVs(
             candidates: [
               {
                 candidateDetails: parsedCV,
-                jobMatches: matchScores,
+                jobMatches: analysis,
               },
             ],
           });
@@ -110,6 +49,7 @@ export async function processCVs(
         }
       })
     );
+    
     return results;
   } catch (error) {
     throw new Error(

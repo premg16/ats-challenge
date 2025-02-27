@@ -2,10 +2,10 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { Gemini } from "../ai/gemini";
 import { OpenAI } from "../ai/openai";
 import { PROFILE_MATCHING_PROMPT } from "../prompts";
-import { ParsedCV } from "@/lib/types/cv";
+
 
 export async function calculateMatchScores(
-  cv: ParsedCV,
+  cv: any,
   job: any,
   provider: "openai" | "gemini"
 ): Promise< any> {
@@ -51,12 +51,5 @@ export async function calculateMatchScores(
       throw new Error('Invalid provider');
   }
 
-  return {
-    overallScore: analysis.overallScore,
-    keyMatchingHighlights: analysis.keyMatchingHiglights,
-    skillsScore: analysis.technicalSkillsMatch.score,
-    experienceScore: analysis.experienceMatch.score,
-    educationScore: analysis.educationMatch.score,
-    softSkillsScore: analysis.softSkillsMatch.score,
-  };
+  return analysis;
 }

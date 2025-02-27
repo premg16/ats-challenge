@@ -70,6 +70,7 @@ Given the following information:
 Provide a detailed analysis in the following JSON format:
 {{
     "overallScore": percentage,
+    "justification": string,
     "keyMatchingHighlights": [string, string, string],
     "keyGaps": [string, string, string],
     "technicalSkillsMatch": {{

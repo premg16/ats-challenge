@@ -1,12 +1,12 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { SystemMessage, HumanMessage } from "@langchain/core/messages";
-import { ParsedCV } from '@/lib/types/cv';
+import { geminiApiKey, geminiModel } from "../constants";
 
 export async function Gemini(system_prompt:string, text: string): Promise<any> {
   try {
     const model = new ChatGoogleGenerativeAI({
-      apiKey: process.env.GEMINI_API_KEY,
-      modelName: "gemini-2.0-flash"
+      apiKey: geminiApiKey,
+      modelName: geminiModel,
     });
 
     const systemMessage = new SystemMessage(system_prompt);
@@ -34,7 +34,7 @@ export async function Gemini(system_prompt:string, text: string): Promise<any> {
           const possibleJson = response_str.match(/(\{[\s\S]*\})/);
           if (possibleJson && possibleJson[1]) {
             try {
-              jsonData = JSON.parse(possibleJson[1]) as ParsedCV;
+              jsonData = JSON.parse(possibleJson[1]);
             } catch (finalError) {
               throw new Error("Failed to parse JSON from response");
             }
