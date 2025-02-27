@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const CandidatePage: FC = () => {
+function CandidatePageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { results } = useCandidateStore();
@@ -62,7 +62,7 @@ const CandidatePage: FC = () => {
   }
 
   const { candidateDetails, jobMatches } = candidate;
-  const { personalDetails, experience, education, skills } = candidateDetails;
+  const { personalDetails, experience, education } = candidateDetails;
 
   return (
     <div className="mx-auto p-2 space-y-6">
@@ -270,6 +270,14 @@ const CandidatePage: FC = () => {
         </Tabs>
       </div>
     </div>
+  );
+}
+
+const CandidatePage: FC = () => {
+  return (
+    <Suspense fallback={<div className="p-4">Loading candidate details...</div>}>
+      <CandidatePageContent />
+    </Suspense>
   );
 };
 

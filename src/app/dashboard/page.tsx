@@ -22,8 +22,10 @@ export default function Dashboard() {
     );
 
     const errors = newResults.filter((result) => result.error);
-    filteredResults.length > 0 && setResults([...results, ...filteredResults]);
-    errors.map((error) => toast.error(error.error));
+    if (filteredResults.length > 0) {
+      setResults([...results, ...filteredResults]);
+    }
+    errors.forEach((error) => toast.error(error.error));
   };
 
   return (

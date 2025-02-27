@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useRef, useEffect, Dispatch, SetStateAction, useCallback } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/select";
 import { processCVs } from "@/app/actions/cv-processing";
 import { Input } from "../ui/input";
+import { ProcessingResult } from "@/lib/types";
 
 interface CVUploadProps {
-  onUpload: (results: any[]) => void;
+  onUpload: (results: ProcessingResult[]) => void;
   files: File[];
   setFiles: Dispatch<SetStateAction<File[]>>;
 }
@@ -26,7 +27,7 @@ export default function CVUpload({ onUpload, files, setFiles }: CVUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateFiles = (newFiles: File[]) => {
+  const validateFiles = useCallback((newFiles: File[]) => {
     // Remove duplicates based on name and last modified time
     const existingFileKeys = new Set(
       files.map((file) => `${file.name}-${file.lastModified}`)
@@ -52,14 +53,14 @@ export default function CVUpload({ onUpload, files, setFiles }: CVUploadProps) {
 
       return true;
     });
-  };
+  }, [files]);
 
-  const addFiles = (newFiles: File[]) => {
+  const addFiles = useCallback((newFiles: File[]) => {
     const validFiles = validateFiles(newFiles);
     if (validFiles.length > 0) {
       setFiles((prev) => [...prev, ...validFiles]);
     }
-  };
+  }, [validateFiles, setFiles]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
@@ -127,7 +128,7 @@ export default function CVUpload({ onUpload, files, setFiles }: CVUploadProps) {
       window.removeEventListener("dragleave", handleWindowDragLeave);
       window.removeEventListener("drop", handleWindowDrop);
     };
-  }, []);
+  }, [isDragging, addFiles]);
 
   return (
     <>
