@@ -3,6 +3,7 @@ import { parseCV } from "@/lib/parsers";
 import { calculateMatchScores } from "@/lib/matching";
 import jobRolesData from "../../../resources/job-roles.json";
 import { extractDetails } from "@/lib/extract";
+import { JobMatch, ProcessingResult } from "@/lib/types";
 
 export async function processCVs(
   files: File[],

@@ -12,13 +12,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCandidateStore } from "@/lib/store/candidateStore";
+import { CandidateResult, CandidateSchema } from "@/lib/types";
 
 export const ResultsTable = () => {
   const { results } = useCandidateStore();
+  const router = useRouter();
+
+  if (!results) return <div>Something Went Wrong</div>;
+  
   // extract candidates from results, results is an array of objects of single array of candidates and job matches array
   const candidates = results.map((result) => result.candidate[0]);
   console.log("Candidates", candidates);
-  const router = useRouter();
 
   const handleViewDetails = (candidate: CandidateSchema) => {
     if (candidate) {
@@ -29,8 +33,6 @@ export const ResultsTable = () => {
       );
     }
   };
-
-  if (!results) return <div>Something Went Wrong</div>;
 
   return (
     <div className="rounded-md border shadow-sm hover:shadow-md transition-shadow duration-200">

@@ -3,23 +3,20 @@
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
-import Notifications from "./notifications";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-
 
 export default function Header() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  
   // useEffect runs only on client side
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   if (
     pathname === "/" ||
     pathname === "/login" ||
@@ -29,7 +26,7 @@ export default function Header() {
   ) {
     return <></>;
   }
-  
+
   // Prevent flash of incorrect theme
   if (!mounted) {
     return null;
@@ -46,7 +43,7 @@ export default function Header() {
 
       <div className="flex items-center space-x-4">
         <button className="relative text-muted-foreground hover:text-foreground transition-colors">
-          <Notifications />
+          <Bell />
           <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-destructive rounded-full"></span>
         </button>
         <Button

@@ -1,9 +1,9 @@
-interface JobMatch {
+export interface JobMatch {
     jobTitle: string;
     analysis: AnalysisResult;
   }
   
-  interface AnalysisResult {
+ interface AnalysisResult {
     overallScore: number;
     justification: string;
     keyMatchingHighlights: [string, string, string];
@@ -30,12 +30,12 @@ interface JobMatch {
     };
   }
   
-  interface CandidateResult {
+  export interface CandidateResult {
     candidateDetails: CandidateSchema;
     jobMatches: JobMatch[];
   }
   
-  interface CandidateSchema {
+  export interface CandidateSchema {
     personalDetails: {
       name: string;
       contact: string;
@@ -81,7 +81,7 @@ interface JobMatch {
     };
   }
   
-  interface ProcessingResult {
+  export interface ProcessingResult {
     candidate: CandidateResult[];
     error?: string;
   }

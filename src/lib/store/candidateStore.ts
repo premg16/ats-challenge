@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { ProcessingResult } from "../types";
 
 interface CandidateStore {
   results: ProcessingResult[];

@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProcessingResult } from "@/lib/types";
 
 export default function Dashboard() {
   const [files, setFiles] = useState<File[]>([]);
