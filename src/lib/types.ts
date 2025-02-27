@@ -82,6 +82,6 @@ interface JobMatch {
   }
   
   interface ProcessingResult {
-    candidates: CandidateResult[];
+    candidate: CandidateResult[];
     error?: string;
   }

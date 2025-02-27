@@ -32,7 +32,7 @@ export async function processCVs(
 
           // Group scores by candidate
           results.push({
-            candidates: [
+            candidate: [
               {
                 candidateDetails: parsedCV,
                 jobMatches: analysis,
@@ -41,7 +41,7 @@ export async function processCVs(
           });
         } catch (error) {
           results.push({
-            candidates: [],
+            candidate: [],
             error: `Failed to process CV ${file.name}: ${
               error instanceof Error ? error.message : "Unknown error"
             }`,
