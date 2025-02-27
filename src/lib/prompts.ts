@@ -12,6 +12,7 @@ Extract key information from the provided CV for a candidate matching system foc
 5. Be precise with dates, using full dates when available or just years if that's all that's provided
 6. For responsibilities and achievements, extract key points that would be relevant for blue-collar or sales positions
 7. If something is not found please put NA for that field
+8. Personal Details should be capitalized (first letters) where necessary to maintain consistency
 
 ## Output Format
 {
