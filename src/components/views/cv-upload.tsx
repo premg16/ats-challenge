@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,24 +11,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
 import { processCVs } from "@/app/actions/cv-processing";
+import { Input } from "../ui/input";
 
 interface CVUploadProps {
   onUpload: (results: any[]) => void;
+  files: File[];
+  setFiles: Dispatch<SetStateAction<File[]>>;
 }
 
-export default function CVUpload({ onUpload }: CVUploadProps) {
-  const [files, setFiles] = useState<File[]>([]);
+export default function CVUpload({ onUpload, files, setFiles }: CVUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [provider, setProvider] = useState<"openai" | "gemini">("openai");
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateFiles = (newFiles: File[]) => {
     // Remove duplicates based on name and last modified time
     const existingFileKeys = new Set(
-      files.map(file => `${file.name}-${file.lastModified}`)
+      files.map((file) => `${file.name}-${file.lastModified}`)
     );
 
     return newFiles.filter((file) => {
@@ -56,22 +57,13 @@ export default function CVUpload({ onUpload }: CVUploadProps) {
   const addFiles = (newFiles: File[]) => {
     const validFiles = validateFiles(newFiles);
     if (validFiles.length > 0) {
-      setFiles(prev => [...prev, ...validFiles]);
+      setFiles((prev) => [...prev, ...validFiles]);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     addFiles(selectedFiles);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    addFiles(droppedFiles);
   };
 
   const handleUpload = async () => {
@@ -92,48 +84,79 @@ export default function CVUpload({ onUpload }: CVUploadProps) {
       setFiles([]); // Clear files after successful processing
     }
   };
+  
+  useEffect(() => {
+    const handleWindowDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isDragging) setIsDragging(true);
+    };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
+    const handleWindowDragLeave = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
+      // Only set isDragging to false if we're leaving the window
+      if (
+        e.clientY <= 0 ||
+        e.clientX <= 0 ||
+        e.clientY >= window.innerHeight ||
+        e.clientX >= window.innerWidth
+      ) {
+        setIsDragging(false);
+      }
+    };
+
+    const handleWindowDrop = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      const droppedFiles = Array.from(e.dataTransfer?.files || []);
+      addFiles(droppedFiles);
+    };
+
+    // Add event listeners
+    window.addEventListener("dragover", handleWindowDragOver);
+    window.addEventListener("dragleave", handleWindowDragLeave);
+    window.addEventListener("drop", handleWindowDrop);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("dragover", handleWindowDragOver);
+      window.removeEventListener("dragleave", handleWindowDragLeave);
+      window.removeEventListener("drop", handleWindowDrop);
+    };
+  }, []);
 
   return (
-    <div className="border rounded-lg p-6 space-y-4 bg-brand-white dark:bg-brand-dark">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Upload CVs</h3>
+    <>
+      {isDragging && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="border-2 border-dashed border-primary rounded-lg p-12 bg-background/50">
+            <Upload className="w-12 h-12 text-primary mx-auto mb-4" />
+            <p className="text-lg font-medium text-center">
+              Drop your files here
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="flex items-center gap-4">
         <Select
           value={provider}
           onValueChange={(value: "openai" | "gemini") => setProvider(value)}
         >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select AI Provider" />
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Select AI" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="openai">OpenAI</SelectItem>
             <SelectItem value="gemini">Google Gemini</SelectItem>
           </SelectContent>
         </Select>
-      </div>
 
-      <div
-        className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center space-y-4 transition-colors",
-          isDragging && "border-primary bg-muted",
-          "hover:border-primary hover:bg-muted"
-        )}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <input
+        <Input
+          ref={fileInputRef}
           type="file"
           id="cv-upload"
           multiple
@@ -142,44 +165,29 @@ export default function CVUpload({ onUpload }: CVUploadProps) {
           onChange={handleFileChange}
           disabled={uploading}
         />
-        <label
-          htmlFor="cv-upload"
-          className="cursor-pointer flex flex-col items-center gap-2"
-        >
-          <Upload
-            className={cn(
-              "w-8 h-8",
-              isDragging ? "text-primary" : "text-muted-foreground"
-            )}
-          />
-          <span
-            className={cn(
-              isDragging ? "text-primary" : "text-muted-foreground"
-            )}
-          >
-            {isDragging
-              ? "Drop files here"
-              : "Drag & drop or click to upload CVs"}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            Supported formats: PDF, DOCX, TXT
-          </span>
-        </label>
-      </div>
 
-      <Button
-        onClick={handleUpload}
-        disabled={uploading || files.length === 0}
-        className="w-full"
-      >
-        {uploading ? (
-          <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          </>
-        ) : (
-          "Process CVs"
+        <Button
+          onClick={() => fileInputRef.current?.click()}
+          variant="default"
+          disabled={uploading}
+        >
+          <Upload size={16} className="mr-2" />
+          Upload CVs
+        </Button>
+
+        {files.length > 0 && (
+          <Button onClick={handleUpload} disabled={uploading}>
+            {uploading ? (
+              <>
+                <Loader2 size={16} className="mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Process CVs"
+            )}
+          </Button>
         )}
-      </Button>
-    </div>
+      </div>
+    </>
   );
 }
