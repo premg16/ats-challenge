@@ -9,7 +9,6 @@ export async function processCVs(
     files: File[],
     provider: "openai" | "gemini",
 ): Promise<ProcessingResult[]> {
-
     const results: ProcessingResult[] = [];
 
     try {

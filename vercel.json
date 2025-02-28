@@ -1,8 +1,8 @@
 {
-  "version": 2,
-  "functions": {
-    "src/app/api/**/*.{js,ts}": {
-      "maxDuration": 60
+    "version": 2,
+    "functions": {
+        "src/app/api/**/*.{js,ts}": {
+            "maxDuration": 60
+        }
     }
-  }
 }
