@@ -20,7 +20,7 @@ describe("CVUpload Component", () => {
             win.toast = {
                 error: cy.stub().as("toastError"),
                 success: cy.stub().as("toastSuccess"),
-                info: cy.stub().as("toastInfo")
+                info: cy.stub().as("toastInfo"),
             };
         });
 
@@ -30,7 +30,7 @@ describe("CVUpload Component", () => {
                 onUpload={mockOnUpload}
                 files={[]}
                 setFiles={mockSetFiles}
-            />
+            />,
         );
     });
 
@@ -52,14 +52,16 @@ describe("CVUpload Component", () => {
 
     it("handles valid file upload", () => {
         // Create a test file (a real File object)
-        cy.fixture('example.json').then(fileContent => {
+        cy.fixture("example.json").then((fileContent) => {
             const testFile = new File(
                 [JSON.stringify(fileContent)],
-                'test.pdf',
-                { type: 'application/pdf' }
+                "test.pdf",
+                { type: "application/pdf" },
             );
             // Pass the file wrapped in an array with a type cast as a workaround.
-            cy.get("input[type=file]").selectFile([testFile] as any, { force: true });
+            cy.get("input[type=file]").selectFile([testFile] as any, {
+                force: true,
+            });
 
             // Verify setFiles was called
             cy.get("@setFiles").should("have.been.called");
@@ -68,42 +70,49 @@ describe("CVUpload Component", () => {
 
     it("validates file types", () => {
         // Create an invalid file (jpg instead of pdf)
-        cy.fixture('example.json').then(fileContent => {
+        cy.fixture("example.json").then((fileContent) => {
             const invalidFile = new File(
                 [JSON.stringify(fileContent)],
-                'test.jpg',
-                { type: 'image/jpeg' }
+                "test.jpg",
+                { type: "image/jpeg" },
             );
 
             // Pass the file wrapped in an array with a type cast.
-            cy.get("input[type=file]").selectFile([invalidFile] as any, { force: true });
+            cy.get("input[type=file]").selectFile([invalidFile] as any, {
+                force: true,
+            });
 
             // Verify that the error toast is shown with the correct message
-            cy.get("@toastError").should("have.been.calledWith",
-                "test.jpg is not a supported file type"
+            cy.get("@toastError").should(
+                "have.been.calledWith",
+                "test.jpg is not a supported file type",
             );
         });
     });
 
     it("handles file limit exceeded", () => {
         // Create test files (an array of 4 files) so that file limit is exceeded (limit is 3)
-        cy.fixture('example.json').then(fileContent => {
+        cy.fixture("example.json").then((fileContent) => {
             const files = Array(4)
                 .fill(null)
-                .map((_, i) => 
-                    new File(
-                        [JSON.stringify(fileContent)],
-                        `test${i}.pdf`,
-                        { type: 'application/pdf' }
-                    )
+                .map(
+                    (_, i) =>
+                        new File(
+                            [JSON.stringify(fileContent)],
+                            `test${i}.pdf`,
+                            { type: "application/pdf" },
+                        ),
                 );
 
             // Pass the file array with a type cast.
-            cy.get("input[type=file]").selectFile(files as any, { force: true });
+            cy.get("input[type=file]").selectFile(files as any, {
+                force: true,
+            });
 
             // Verify that the error toast is shown for exceeding the file limit
-            cy.get("@toastError").should("have.been.calledWith",
-                "You can upload a maximum of 3 files due to processing time constraints"
+            cy.get("@toastError").should(
+                "have.been.calledWith",
+                "You can upload a maximum of 3 files due to processing time constraints",
             );
         });
     });
@@ -112,15 +121,15 @@ describe("CVUpload Component", () => {
         // Mock a successful API response
         cy.intercept("POST", "/api/cv-processing", {
             statusCode: 200,
-            body: { results: [{ id: 1, name: "Test Result" }] }
+            body: { results: [{ id: 1, name: "Test Result" }] },
         }).as("processCV");
 
         // Create and add a test file
-        cy.fixture('example.json').then(fileContent => {
+        cy.fixture("example.json").then((fileContent) => {
             const testFile = new File(
                 [JSON.stringify(fileContent)],
-                'test.pdf',
-                { type: 'application/pdf' }
+                "test.pdf",
+                { type: "application/pdf" },
             );
 
             // Re‑mount component with a pre‑populated file
@@ -129,14 +138,14 @@ describe("CVUpload Component", () => {
                     onUpload={mockOnUpload}
                     files={[testFile]}
                     setFiles={mockSetFiles}
-                />
+                />,
             );
             // Re‑assign the toast stubs after mounting
             cy.window().then((win) => {
                 win.toast = {
                     error: cy.stub().as("toastError"),
                     success: cy.stub().as("toastSuccess"),
-                    info: cy.stub().as("toastInfo")
+                    info: cy.stub().as("toastInfo"),
                 };
             });
 
@@ -147,8 +156,9 @@ describe("CVUpload Component", () => {
             cy.wait("@processCV");
 
             // Verify the success toast and that onUpload was called
-            cy.get("@toastSuccess").should("have.been.calledWith",
-                "CVs processed successfully"
+            cy.get("@toastSuccess").should(
+                "have.been.calledWith",
+                "CVs processed successfully",
             );
             cy.get("@onUpload").should("have.been.called");
         });
@@ -158,15 +168,15 @@ describe("CVUpload Component", () => {
         // Mock a failed API response
         cy.intercept("POST", "/api/cv-processing", {
             statusCode: 500,
-            body: { error: "Processing failed" }
+            body: { error: "Processing failed" },
         }).as("processCV");
 
         // Create and add a test file
-        cy.fixture('example.json').then(fileContent => {
+        cy.fixture("example.json").then((fileContent) => {
             const testFile = new File(
                 [JSON.stringify(fileContent)],
-                'test.pdf',
-                { type: 'application/pdf' }
+                "test.pdf",
+                { type: "application/pdf" },
             );
 
             // Re‑mount component with a pre‑populated file
@@ -175,14 +185,14 @@ describe("CVUpload Component", () => {
                     onUpload={mockOnUpload}
                     files={[testFile]}
                     setFiles={mockSetFiles}
-                />
+                />,
             );
             // Re‑assign toast stubs after mounting
             cy.window().then((win) => {
                 win.toast = {
                     error: cy.stub().as("toastError"),
                     success: cy.stub().as("toastSuccess"),
-                    info: cy.stub().as("toastInfo")
+                    info: cy.stub().as("toastInfo"),
                 };
             });
 
@@ -193,8 +203,9 @@ describe("CVUpload Component", () => {
             cy.wait("@processCV");
 
             // Verify that the error toast is shown with the correct error message
-            cy.get("@toastError").should("have.been.calledWith",
-                "Error processing CVs: Processing failed"
+            cy.get("@toastError").should(
+                "have.been.calledWith",
+                "Error processing CVs: Processing failed",
             );
         });
     });
@@ -205,16 +216,16 @@ describe("CVUpload Component", () => {
             req.reply({
                 delay: 1000,
                 statusCode: 200,
-                body: { results: [{ id: 1 }] }
+                body: { results: [{ id: 1 }] },
             });
         }).as("processCV");
 
         // Create and add a test file
-        cy.fixture('example.json').then(fileContent => {
+        cy.fixture("example.json").then((fileContent) => {
             const testFile = new File(
                 [JSON.stringify(fileContent)],
-                'test.pdf',
-                { type: 'application/pdf' }
+                "test.pdf",
+                { type: "application/pdf" },
             );
 
             // Re‑mount component with a pre‑populated file
@@ -223,14 +234,14 @@ describe("CVUpload Component", () => {
                     onUpload={mockOnUpload}
                     files={[testFile]}
                     setFiles={mockSetFiles}
-                />
+                />,
             );
             // Re‑assign toast stubs after mounting
             cy.window().then((win) => {
                 win.toast = {
                     error: cy.stub().as("toastError"),
                     success: cy.stub().as("toastSuccess"),
-                    info: cy.stub().as("toastInfo")
+                    info: cy.stub().as("toastInfo"),
                 };
             });
 
