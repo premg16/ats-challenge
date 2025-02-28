@@ -130,9 +130,13 @@ describe("calculateMatchScores", () => {
     });
 
     test("should throw error for invalid provider", async () => {
-        // @ts-ignore - Intentionally passing invalid provider for testing
+        // Using a type assertion to create an invalid provider type
         await expect(
-            calculateMatchScores(mockCV, mockJob, "invalid"),
+            calculateMatchScores(
+                mockCV,
+                mockJob,
+                "invalid" as "openai" | "gemini",
+            ),
         ).rejects.toThrow("Invalid provider");
 
         // Verify neither OpenAI nor Gemini was called

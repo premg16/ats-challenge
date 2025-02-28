@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import * as React from "react";
+
 import {
     Select,
     SelectTrigger,
@@ -14,81 +14,104 @@ import {
 import { forwardRef } from "react";
 
 // Mock the Radix UI components
-jest.mock("@radix-ui/react-select", () => ({
-    Root: ({ children, ...props }: any) => (
-        <div data-testid="select-root" {...props}>
-            {children}
-        </div>
-    ),
-    Trigger: forwardRef(({ children, ...props }: any, ref: any) => (
+jest.mock("@radix-ui/react-select", () => {
+    const MockTrigger = forwardRef(({ children, ...props }: any, ref: any) => (
         <button ref={ref} data-testid="select-trigger" {...props}>
             {children}
         </button>
-    )),
-    Value: ({ children, ...props }: any) => (
-        <span data-testid="select-value" {...props}>
-            {children}
-        </span>
-    ),
-    Icon: ({ children, ...props }: any) => (
-        <span data-testid="select-icon" {...props}>
-            {children}
-        </span>
-    ),
-    Portal: ({ children, ...props }: any) => (
-        <div data-testid="select-portal" {...props}>
-            {children}
-        </div>
-    ),
-    Content: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockTrigger.displayName = "SelectTrigger";
+
+    const MockContent = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="select-content" {...props}>
             {children}
         </div>
-    )),
-    Viewport: ({ children, ...props }: any) => (
-        <div data-testid="select-viewport" {...props}>
-            {children}
-        </div>
-    ),
-    Item: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockContent.displayName = "SelectContent";
+
+    const MockItem = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="select-item" {...props}>
             {children}
         </div>
-    )),
-    ItemText: ({ children, ...props }: any) => (
-        <span data-testid="select-item-text" {...props}>
-            {children}
-        </span>
-    ),
-    ItemIndicator: ({ children, ...props }: any) => (
-        <span data-testid="select-item-indicator" {...props}>
-            {children}
-        </span>
-    ),
-    Group: ({ children, ...props }: any) => (
-        <div data-testid="select-group" {...props}>
-            {children}
-        </div>
-    ),
-    Label: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockItem.displayName = "SelectItem";
+
+    const MockLabel = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="select-label" {...props}>
             {children}
         </div>
-    )),
-    Separator: forwardRef(({ ...props }: any, ref: any) => (
+    ));
+    MockLabel.displayName = "SelectLabel";
+
+    const MockSeparator = forwardRef(({ ...props }: any, ref: any) => (
         <div ref={ref} data-testid="select-separator" {...props} />
-    )),
-    ScrollUpButton: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockSeparator.displayName = "SelectSeparator";
+
+    const MockScrollUpButton = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="select-scroll-up" {...props}>
             {children}
         </div>
-    )),
-    ScrollDownButton: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockScrollUpButton.displayName = "SelectScrollUpButton";
+
+    const MockScrollDownButton = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="select-scroll-down" {...props}>
             {children}
         </div>
-    )),
-}));
+    ));
+    MockScrollDownButton.displayName = "SelectScrollDownButton";
+
+    return {
+        Root: ({ children, ...props }: any) => (
+            <div data-testid="select-root" {...props}>
+                {children}
+            </div>
+        ),
+        Trigger: MockTrigger,
+        Value: ({ children, ...props }: any) => (
+            <span data-testid="select-value" {...props}>
+                {children}
+            </span>
+        ),
+        Icon: ({ children, ...props }: any) => (
+            <span data-testid="select-icon" {...props}>
+                {children}
+            </span>
+        ),
+        Portal: ({ children, ...props }: any) => (
+            <div data-testid="select-portal" {...props}>
+                {children}
+            </div>
+        ),
+        Content: MockContent,
+        Viewport: ({ children, ...props }: any) => (
+            <div data-testid="select-viewport" {...props}>
+                {children}
+            </div>
+        ),
+        Item: MockItem,
+        ItemText: ({ children, ...props }: any) => (
+            <span data-testid="select-item-text" {...props}>
+                {children}
+            </span>
+        ),
+        ItemIndicator: ({ children, ...props }: any) => (
+            <span data-testid="select-item-indicator" {...props}>
+                {children}
+            </span>
+        ),
+        Group: ({ children, ...props }: any) => (
+            <div data-testid="select-group" {...props}>
+                {children}
+            </div>
+        ),
+        Label: MockLabel,
+        Separator: MockSeparator,
+        ScrollUpButton: MockScrollUpButton,
+        ScrollDownButton: MockScrollDownButton,
+    };
+});
 
 // Mock lucide-react icons
 jest.mock("lucide-react", () => ({

@@ -25,7 +25,7 @@ describe("extractDetails", () => {
             name: "John Doe",
             skills: ["JavaScript", "TypeScript"],
         };
-        // @ts-ignore
+        // @ts-expect-error - Mock implementation returns a Promise that resolves to any type
         OpenAI.mockResolvedValue(mockResult);
 
         // Act
@@ -41,7 +41,7 @@ describe("extractDetails", () => {
         // Arrange
         const mockText = "Sample CV text";
         const mockResult = { name: "Jane Smith", skills: ["Python", "Java"] };
-        // @ts-ignore
+        // @ts-expect-error - Mock implementation returns a Promise that resolves to any type
         Gemini.mockResolvedValue(mockResult);
 
         // Act
@@ -58,7 +58,7 @@ describe("extractDetails", () => {
         const mockText = "Sample CV text";
 
         // Act & Assert
-        // @ts-ignore - Intentionally passing an invalid provider for testing
+        // @ts-expect-error - Testing with invalid provider type to ensure proper error handling
         await expect(extractDetails(mockText, "invalid")).rejects.toThrow(
             "Invalid provider",
         );
@@ -70,7 +70,7 @@ describe("extractDetails", () => {
         // Arrange
         const mockText = "Sample CV text";
         const mockError = new Error("OpenAI API error");
-        // @ts-ignore
+        // @ts-expect-error - Mock implementation returns a Promise that rejects with any error
         OpenAI.mockRejectedValue(mockError);
 
         // Act & Assert
@@ -85,7 +85,7 @@ describe("extractDetails", () => {
         // Arrange
         const mockText = "Sample CV text";
         const mockError = new Error("Gemini API error");
-        // @ts-ignore
+        // @ts-expect-error - Mock implementation returns a Promise that rejects with any error
         Gemini.mockRejectedValue(mockError);
 
         // Act & Assert

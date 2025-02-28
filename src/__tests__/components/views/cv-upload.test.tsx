@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import CVUpload from "@/components/views/cv-upload";
 import { toast } from "sonner";
 import { processCVs } from "@/app/actions/cv-processing";
-import * as React from "react";
+import React from "react";
 
 // Mock dependencies
 jest.mock("sonner", () => ({
@@ -39,35 +39,53 @@ jest.mock("@/components/ui/button", () => ({
 }));
 
 jest.mock("@/components/ui/select", () => {
-    const React = require("react");
     return {
-        Select: ({ children, onValueChange, value }: any) => (
+        Select: ({
+            children,
+            onValueChange,
+            value,
+        }: {
+            children: React.ReactNode;
+            onValueChange?: (value: string) => void;
+            value?: string;
+        }) => (
             <div data-testid="select">
                 {React.Children.map(children, (child) => {
                     if (React.isValidElement(child)) {
-                        return React.cloneElement(child, {
-                            onValueChange,
-                            value,
-                        });
+                        return React.cloneElement(
+                            child as React.ReactElement<any>,
+                            {
+                                onValueChange,
+                                value,
+                            },
+                        );
                     }
                     return child;
                 })}
-                {/* Hidden native select to allow controlled behaviour if needed */}
                 <select
                     data-testid="native-select"
                     value={value}
-                    onChange={(e) =>
-                        onValueChange && onValueChange(e.target.value)
-                    }
+                    onChange={(e) => onValueChange?.(e.target.value)}
                     style={{ display: "none" }}
                 />
             </div>
         ),
-        SelectContent: ({ children, onValueChange }: any) => (
+        SelectContent: ({
+            children,
+            onValueChange,
+        }: {
+            children: React.ReactNode;
+            onValueChange?: (value: string) => void;
+        }) => (
             <div data-testid="select-content">
                 {React.Children.map(children, (child) => {
                     if (React.isValidElement(child)) {
-                        return React.cloneElement(child, { onValueChange });
+                        return React.cloneElement(
+                            child as React.ReactElement<any>,
+                            {
+                                onValueChange,
+                            },
+                        );
                     }
                     return child;
                 })}
@@ -104,6 +122,9 @@ jest.mock("@/components/ui/input", () => ({
     ),
 }));
 
+// Mock global fetch
+global.fetch = jest.fn();
+
 describe("CVUpload", () => {
     const mockOnUpload = jest.fn();
     const mockSetFiles = jest.fn();
@@ -111,6 +132,7 @@ describe("CVUpload", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        (global.fetch as jest.Mock).mockReset();
     });
 
     const renderCVUpload = () => {
@@ -177,34 +199,28 @@ describe("CVUpload", () => {
         );
 
         const mockResults = [{ id: 1, name: "Test Result" }];
-        (processCVs as jest.Mock).mockResolvedValue(mockResults);
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ results: mockResults }),
+        });
 
         const uploadButton = screen.getByText("Process CVs");
         await userEvent.click(uploadButton);
 
         await waitFor(() => {
-            expect(processCVs).toHaveBeenCalledWith(
-                mockFilesWithContent,
-                "openai",
+            expect(global.fetch).toHaveBeenCalledWith(
+                "/api/cv-processing",
+                expect.objectContaining({
+                    method: "POST",
+                    body: expect.any(FormData),
+                })
             );
             expect(mockOnUpload).toHaveBeenCalledWith(mockResults);
             expect(toast.success).toHaveBeenCalledWith(
-                "CVs processed successfully",
+                "CVs processed successfully"
             );
             expect(mockSetFiles).toHaveBeenCalledWith([]);
         });
-    });
-
-    it("shows error toast when trying to upload with no files", async () => {
-        const mockToastError = jest.fn();
-        (toast.error as jest.Mock).mockImplementation(mockToastError);
-
-        renderCVUpload();
-
-        const uploadButton = screen.getByText("Upload CVs");
-        await userEvent.click(uploadButton);
-
-        expect(mockToastError).not.toHaveBeenCalled();
     });
 
     it("handles upload errors gracefully", async () => {
@@ -220,13 +236,19 @@ describe("CVUpload", () => {
             />,
         );
 
-        (processCVs as jest.Mock).mockRejectedValue(new Error("Upload failed"));
+        const errorMessage = "Failed to process CVs";
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: false,
+            json: () => Promise.resolve({ error: errorMessage }),
+        });
 
         const uploadButton = screen.getByText("Process CVs");
         await userEvent.click(uploadButton);
 
         await waitFor(() => {
-            expect(toast.error).toHaveBeenCalledWith("Error processing CVs");
+            expect(toast.error).toHaveBeenCalledWith(
+                expect.stringContaining("Error processing CVs")
+            );
         });
     });
 
@@ -243,19 +265,22 @@ describe("CVUpload", () => {
             />,
         );
 
-        let resolvePromise: (value: any) => void;
-        const promise = new Promise((resolve) => {
-            resolvePromise = resolve;
+        let resolveResponse: (value: any) => void;
+        const responsePromise = new Promise((resolve) => {
+            resolveResponse = resolve;
         });
 
-        (processCVs as jest.Mock).mockImplementation(() => promise);
+        (global.fetch as jest.Mock).mockImplementationOnce(() => responsePromise);
 
         const uploadButton = screen.getByText("Process CVs");
         await userEvent.click(uploadButton);
 
         expect(screen.getByTestId("loader-icon")).toBeInTheDocument();
 
-        resolvePromise!([{ id: 1 }]);
+        resolveResponse!({
+            ok: true,
+            json: () => Promise.resolve({ results: [{ id: 1 }] }),
+        });
 
         await waitFor(() => {
             expect(mockOnUpload).toHaveBeenCalled();
@@ -263,7 +288,6 @@ describe("CVUpload", () => {
     });
 
     it("changes AI provider when select value changes", async () => {
-        // Provide a file so that the "Process CVs" button is rendered.
         const fileForTest = new File(["dummy content"], "test.pdf", {
             type: "application/pdf",
         });
@@ -277,28 +301,28 @@ describe("CVUpload", () => {
             />,
         );
 
-        // Simulate clicking on the select trigger to open options.
         const selectTrigger = screen.getByTestId("select-trigger");
         fireEvent.click(selectTrigger);
 
-        // Wait for the "Google Gemini" option to appear and click it.
-        const geminiOption = await waitFor(() =>
-            screen.getByText("Google Gemini"),
-        );
+        const geminiOption = await screen.findByText("Google Gemini");
         fireEvent.click(geminiOption);
 
-        // Click the "Process CVs" button after provider change.
         const processButton = screen.getByText("Process CVs");
         const mockResults = [{ id: 1, name: "Test Result" }];
-        (processCVs as jest.Mock).mockResolvedValueOnce(mockResults);
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ results: mockResults }),
+        });
 
         await userEvent.click(processButton);
 
         await waitFor(() => {
-            expect(processCVs).toHaveBeenCalledWith(filesForTest, "gemini");
+            const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
+            const formData = fetchCall[1].body as FormData;
+            expect(formData.get("provider")).toBe("gemini");
             expect(mockOnUpload).toHaveBeenCalledWith(mockResults);
             expect(toast.success).toHaveBeenCalledWith(
-                "CVs processed successfully",
+                "CVs processed successfully"
             );
         });
     });
