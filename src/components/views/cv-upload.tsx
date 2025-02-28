@@ -39,6 +39,18 @@ export default function CVUpload({ onUpload, files, setFiles }: CVUploadProps) {
             const existingFileKeys = new Set(
                 files.map((file) => `${file.name}-${file.lastModified}`),
             );
+            
+            // Check if adding new files would exceed the 3-file limit
+            const totalFilesAfterAddition = files.length + newFiles.length;
+            if (totalFilesAfterAddition > 3) {
+                toast.error(`You can upload a maximum of 3 files due to processing time constraints`);
+                // If we already have 3 files, reject all new files
+                if (files.length >= 3) return [];
+                // Otherwise, take only enough files to reach the limit
+                const availableSlots = 3 - files.length;
+                toast.info(`Only the first ${availableSlots} file(s) will be added`);
+                newFiles = newFiles.slice(0, availableSlots);
+            }
 
             return newFiles.filter((file) => {
                 const fileKey = `${file.name}-${file.lastModified}`;
