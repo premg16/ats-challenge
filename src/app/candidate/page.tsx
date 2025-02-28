@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, Suspense } from "react";
+import { FC, Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -27,12 +27,19 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 function CandidatePageContent() {
+    const [activeTab, setActiveTab] = useState("analysis");
     const searchParams = useSearchParams();
     const router = useRouter();
     const { results } = useCandidateStore();
-
     const candidateName = searchParams.get("name");
     const candidate =
         results.length > 0
@@ -42,6 +49,18 @@ function CandidatePageContent() {
                           .name === JSON.parse(candidateName || ""),
               )?.candidate[0]
             : null;
+    const { candidateDetails, jobMatches } = candidate;
+    const { personalDetails, experience, education } = candidateDetails;
+
+    // State to track the selected job
+    const [selectedJobId, setSelectedJobId] = useState<string>(
+        jobMatches[0]?.jobTitle || "",
+    );
+
+    // Get the selected job match
+    const selectedJob =
+        jobMatches.find((match) => match.jobTitle === selectedJobId) ||
+        jobMatches[0];
 
     if (!candidate) {
         return (
@@ -65,11 +84,8 @@ function CandidatePageContent() {
         );
     }
 
-    const { candidateDetails, jobMatches } = candidate;
-    const { personalDetails, experience, education } = candidateDetails;
-
     return (
-        <div className="mx-auto space-y-6 p-2">
+        <div className="mx-auto max-h-svh space-y-2 overflow-hidden p-2">
             <div className="flex items-center justify-between">
                 <Button variant="ghost" onClick={() => router.back()}>
                     <ArrowLeft className="mr-2 h-4 w-4" />
@@ -78,56 +94,97 @@ function CandidatePageContent() {
             </div>
 
             {/* Profile Header */}
-            <div className="flex gap-2">
-                <Card className="h-fit w-full max-w-sm border-2">
-                    <CardHeader>
-                        <div className="flex items-start gap-4">
-                            <Avatar className="h-16 w-16">
-                                <AvatarFallback className="bg-primary/10 text-lg">
-                                    {personalDetails.name
-                                        .split(" ")
-                                        .map((n) => n[0])
-                                        .join("")
-                                        .toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <CardTitle className="text-xl font-bold">
-                                            {personalDetails.name}
-                                        </CardTitle>
-                                        <CardDescription className="text-sm">
-                                            {personalDetails.role}
-                                        </CardDescription>
+            <div className="flex gap-4">
+                <div className="flex flex-col gap-4">
+                    <Card className="h-fit w-full max-w-full border-2">
+                        <CardHeader>
+                            <div className="flex items-start gap-4">
+                                <Avatar className="h-16 w-16">
+                                    <AvatarFallback className="bg-primary/10 text-lg">
+                                        {personalDetails.name
+                                            .split(" ")
+                                            .map((n) => n[0])
+                                            .join("")
+                                            .toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1">
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <CardTitle className="text-xl font-bold">
+                                                {personalDetails.name}
+                                            </CardTitle>
+                                            <CardDescription className="text-sm">
+                                                {personalDetails.role}
+                                            </CardDescription>
+                                        </div>
+                                        <Badge
+                                            className="px-2 py-1 text-xs"
+                                            variant="secondary"
+                                        >
+                                            Available
+                                        </Badge>
                                     </div>
-                                    <Badge
-                                        className="px-2 py-1 text-xs"
-                                        variant="secondary"
-                                    >
-                                        Available
-                                    </Badge>
-                                </div>
-                                <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-muted-foreground">
-                                    <div className="flex items-center gap-2">
-                                        <Mail className="h-4 w-4" />{" "}
-                                        {personalDetails.email}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Phone className="h-4 w-4" />{" "}
-                                        {personalDetails.contact}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="h-4 w-4" />{" "}
-                                        {personalDetails.location}
+                                    <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-muted-foreground">
+                                        <div className="flex items-center gap-2">
+                                            <Mail className="h-4 w-4" />{" "}
+                                            {personalDetails.email}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Phone className="h-4 w-4" />{" "}
+                                            {personalDetails.contact}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4" />{" "}
+                                            {personalDetails.location}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </CardHeader>
-                </Card>
+                        </CardHeader>
+                    </Card>
+                    {/* Job Selection Dropdown */}
+                    <div
+                        className={`w-full ${activeTab !== "analysis" ? "hidden" : ""}`}
+                    >
+                        <Select
+                            value={selectedJobId}
+                            onValueChange={setSelectedJobId}
+                            data-testid="job-select"
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a job match" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {jobMatches
+                                    .sort(
+                                        (a, b) =>
+                                            b.analysis.overallScore -
+                                            a.analysis.overallScore,
+                                    )
+                                    .map((match, index) => (
+                                        <SelectItem
+                                            key={index}
+                                            value={match.jobTitle}
+                                            data-testid={`job-option-${index}`}
+                                        >
+                                            {match.jobTitle} (
+                                            {Math.round(
+                                                match.analysis.overallScore,
+                                            )}
+                                            %)
+                                        </SelectItem>
+                                    ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
 
-                <Tabs defaultValue="analysis" className="w-full">
+                <Tabs
+                    defaultValue="analysis"
+                    className="w-full"
+                    onValueChange={setActiveTab}
+                >
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="analysis">
                             Job Match Analysis
@@ -136,21 +193,16 @@ function CandidatePageContent() {
                     </TabsList>
 
                     <TabsContent value="analysis">
-                        <div className="grid gap-6">
-                            {jobMatches
-                                .sort(
-                                    (a, b) =>
-                                        b.analysis.overallScore -
-                                        a.analysis.overallScore,
-                                )
-                                .map((match, index) => (
-                                    <JobMatchCard key={index} match={match} />
-                                ))}
+                        <div className="grid max-h-[calc(100vh-200px)] gap-6 overflow-y-auto scrollbar-thin scrollbar-track-brand-white scrollbar-thumb-brand-green/50 scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-400 dark:scrollbar-track-brand-dark">
+                            {/* Show only the selected job match */}
+                            {selectedJob && (
+                                <JobMatchCard match={selectedJob} />
+                            )}
                         </div>
                     </TabsContent>
 
                     <TabsContent value="profile">
-                        <div className="grid gap-6">
+                        <div className="grid max-h-[calc(100vh-200px)] gap-6 overflow-y-auto scrollbar-thin scrollbar-track-brand-white scrollbar-thumb-brand-green/50 scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-400 dark:scrollbar-track-brand-dark">
                             {/* Skills Section */}
                             <Card>
                                 <CardHeader>
