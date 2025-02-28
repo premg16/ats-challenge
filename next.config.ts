@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
         optimizePackageImports: ["lucide-react"],
         serverActions: {
             bodySizeLimit: "5mb",
+            allowedOrigins: ["*"],
         },
         staleTimes: {
             dynamic: 30,
