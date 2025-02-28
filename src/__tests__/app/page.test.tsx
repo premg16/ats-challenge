@@ -72,7 +72,7 @@ describe("Page", () => {
             .closest('[data-testid="mock-button"]');
         expect(getStartedButton).toBeInTheDocument();
         expect(getStartedButton).toHaveAttribute("data-size", "lg");
-        
+
         // Check that Get Started button has a link to dashboard
         const getStartedLink = screen.getByText("Get Started").closest('[data-testid="mock-link"]');
         expect(getStartedLink).toBeInTheDocument();
