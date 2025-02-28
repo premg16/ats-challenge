@@ -1,20 +1,57 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+
+import NextBundleAnalyzer from "@next/bundle-analyzer";
+import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    /* config options here */
-    images: {
-        remotePatterns: [
-            {
-                protocol: "https",
-                hostname: "www.gravatar.com",
+    compiler: {
+        removeConsole: process.env.NODE_ENV !== "development", // Remove console.log in production
+    },
+    typescript: {
+        tsconfigPath: "tsconfig.json",
+    },
+    bundlePagesRouterDependencies: true,
+    reactStrictMode: false,
+    transpilePackages: ["lucide-react"],
+    experimental: {
+        optimizePackageImports: ["lucide-react"],
+        serverActions: {
+            bodySizeLimit: "5mb",
+        },
+        staleTimes: {
+            dynamic: 30,
+            static: 180,
+        },
+        turbo: {
+            rules: {
+                "*.svg": {
+                    loaders: ["@svgr/webpack"],
+                    as: "*.js",
+                },
             },
-        ],
+            resolveAlias: {
+                underscore: "lodash",
+                mocha: { browser: "mocha/browser-entry.js" },
+            },
+            resolveExtensions: [
+                ".mdx",
+                ".tsx",
+                ".ts",
+                ".jsx",
+                ".js",
+                ".mjs",
+                ".json",
+            ],
+        },
     },
     eslint: {
-        // Warning: This allows production builds to successfully complete even if
-        // your project has ESLint errors.
         ignoreDuringBuilds: true,
+        dirs: ["src"],
     },
 };
 
-export default nextConfig;
+const withBundleAnalyzer = NextBundleAnalyzer({
+    enabled: process.env.ANALYZE === "true",
+});
+
+export default withBundleAnalyzer(nextConfig);

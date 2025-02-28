@@ -14,7 +14,6 @@ export default function Dashboard() {
     const { results, setResults } = useCandidateStore();
 
     const handleCVUpload = async (newResults: ProcessingResult[]) => {
-        console.log("Results", newResults);
         //  remove errors from results and return clean results object and also dont add that result to state if there is an error
 
         const filteredResults = newResults.filter(
