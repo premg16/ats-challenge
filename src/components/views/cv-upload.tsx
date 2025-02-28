@@ -18,7 +18,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { processCVs } from "@/app/actions/cv-processing";
 import { Input } from "../ui/input";
 import { ProcessingResult } from "@/lib/types";
 
@@ -87,12 +86,30 @@ export default function CVUpload({ onUpload, files, setFiles }: CVUploadProps) {
         }
         setUploading(true);
         try {
-            const results = await processCVs(files, provider);
-            onUpload(results);
+            // Create FormData to send files to the API
+            const formData = new FormData();
+            files.forEach(file => {
+                formData.append('files', file);
+            });
+            formData.append('provider', provider);
+            
+            // Call the API endpoint instead of the server action
+            const response = await fetch('/api/cv-processing', {
+                method: 'POST',
+                body: formData,
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to process CVs');
+            }
+            
+            const data = await response.json();
+            onUpload(data.results);
             toast.success("CVs processed successfully");
         } catch (error) {
             console.error(error);
-            toast.error("Error processing CVs");
+            toast.error(`Error processing CVs: ${error instanceof Error ? error.message : 'Unknown error'}`);
         } finally {
             setUploading(false);
             setFiles([]); // Clear files after successful processing

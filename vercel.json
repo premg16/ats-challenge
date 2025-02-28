@@ -1,13 +1,19 @@
 {
   "version": 2,
   "functions": {
-    "src/app/actions/**/*.js": {
+    "api/*.{js,ts}": {
       "maxDuration": 60
     },
-    "src/lib/ai/**/*.js": {
+    "src/app/api/**/*.{js,ts}": {
       "maxDuration": 60
     },
-    "src/lib/parsers/**/*.js": {
+    "src/app/actions/**/*.{js,ts}": {
+      "maxDuration": 60
+    },
+    "src/lib/ai/**/*.{js,ts}": {
+      "maxDuration": 60
+    },
+    "src/lib/parsers/**/*.{js,ts}": {
       "maxDuration": 60
     }
   }
