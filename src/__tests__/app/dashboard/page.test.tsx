@@ -109,6 +109,9 @@ describe("Dashboard", () => {
         render(<Dashboard />);
 
         expect(screen.queryByTestId("results-table")).not.toBeInTheDocument();
+        expect(screen.getByText("No Results Yet")).toBeInTheDocument();
+        expect(screen.getByText("Upload and process CVs to see candidate results here")).toBeInTheDocument();
+        expect(screen.getByText("Start by uploading your first CV")).toBeInTheDocument();
     });
 
     test("renders results table when results are present", () => {

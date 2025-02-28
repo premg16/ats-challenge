@@ -5,9 +5,10 @@ import { useCandidateStore } from "@/lib/store/candidateStore";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, FileText, ArrowUpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProcessingResult } from "@/lib/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Dashboard() {
     const [files, setFiles] = useState<File[]>([]);
@@ -83,9 +84,32 @@ export default function Dashboard() {
             )}
 
             {/* Results Table - Shows after CV upload */}
-            {results.length > 0 && (
+            {results.length > 0 ? (
                 <section className="mb-8">
                     <ResultsTable />
+                </section>
+            ) : (
+                <section className="mb-8">
+                    <Card className="border-dashed bg-muted/50">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="text-center text-xl">No Results Yet</CardTitle>
+                            <CardDescription className="text-center">
+                                Upload and process CVs to see candidate results here
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-col items-center justify-center pb-6 pt-2">
+                            <div className="mb-4 rounded-full bg-primary/10 p-6">
+                                <FileText className="h-10 w-10 text-primary" />
+                            </div>
+                            <div className="max-w-md text-center text-sm text-muted-foreground">
+                                <p>Upload candidate CVs using the button above, then click "Process CVs" to analyze them.</p>
+                                <div className="mt-4 flex items-center justify-center">
+                                    <ArrowUpCircle className="mr-2 h-5 w-5 text-primary" />
+                                    <span className="font-medium">Start by uploading your first CV</span>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </section>
             )}
         </div>
