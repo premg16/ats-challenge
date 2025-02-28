@@ -28,7 +28,7 @@ export default function Page() {
                         </div>
                         <div className="flex w-full justify-center gap-4">
                             <Button size="lg" className="group">
-                                Get Started
+                                <Link href="/dashboard">Get Started</Link>
                                 <svg
                                     className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
                                     fill="none"
