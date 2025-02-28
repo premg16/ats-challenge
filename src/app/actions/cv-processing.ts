@@ -9,7 +9,7 @@ export async function processCVs(
     files: File[],
     provider: "openai" | "gemini",
 ): Promise<ProcessingResult[]> {
-    console.log("processCVs");
+
     const results: ProcessingResult[] = [];
 
     try {
@@ -19,7 +19,7 @@ export async function processCVs(
             files.map(async (file) => {
                 try {
                     // 1. Parse CV text
-                    console.log("processCVs: parsing CV ", file.name);
+
                     const cvText = await parseCV(file);
                     const parsedCV = await extractDetails(cvText, provider);
 
