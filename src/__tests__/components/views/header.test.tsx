@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Header from "@/components/ui/header";
+import Header from "@/components/views/header";
 import { ThemeProvider } from "next-themes";
 import { usePathname } from "next/navigation";
 

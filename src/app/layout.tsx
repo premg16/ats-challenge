@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 import { ThemeProvider } from "@/components/theme-provider";
 import { Urbanist } from "next/font/google";
-import Header from "@/components/ui/header";
+import Header from "@/components/views/header";
 
 const urbanist = Urbanist({ subsets: ["latin"] });
 

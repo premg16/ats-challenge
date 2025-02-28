@@ -27,6 +27,9 @@
         }
     },
     "include": [
+        "cypress/**/*.ts",
+        "cypress/**/*.tsx",
+        "cypress/**/*.js",
         "next-env.d.ts",
         "src/**/*.ts",
         "src/**/*.mts",
