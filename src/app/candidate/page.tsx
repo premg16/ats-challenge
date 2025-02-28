@@ -96,10 +96,10 @@ function CandidatePageContent() {
             {/* Profile Header */}
             <div className="flex gap-4">
                 <div className="flex flex-col gap-4">
-                    <Card className="h-fit w-full max-w-full border-2">
+                    <Card className="h-fit w-full max-w-md border-2">
                         <CardHeader>
                             <div className="flex items-start gap-4">
-                                <Avatar className="h-16 w-16">
+                                <Avatar className="h-12 w-12">
                                     <AvatarFallback className="bg-primary/10 text-lg">
                                         {personalDetails.name
                                             .split(" ")
@@ -108,36 +108,30 @@ function CandidatePageContent() {
                                             .toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className="flex-1">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <CardTitle className="text-xl font-bold">
-                                                {personalDetails.name}
-                                            </CardTitle>
-                                            <CardDescription className="text-sm">
-                                                {personalDetails.role}
-                                            </CardDescription>
-                                        </div>
-                                        <Badge
-                                            className="px-2 py-1 text-xs"
-                                            variant="secondary"
-                                        >
-                                            Available
-                                        </Badge>
+                                <div className="flex items-start justify-between">
+                                    <div className="text-nowrap">
+                                        <CardTitle className="text-xl font-bold">
+                                            {personalDetails.name}
+                                        </CardTitle>
+                                        <CardDescription className="text-sm">
+                                            {personalDetails.role}
+                                        </CardDescription>
                                     </div>
-                                    <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-muted-foreground">
-                                        <div className="flex items-center gap-2">
-                                            <Mail className="h-4 w-4" />{" "}
-                                            {personalDetails.email}
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <Phone className="h-4 w-4" />{" "}
-                                            {personalDetails.contact}
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <MapPin className="h-4 w-4" />{" "}
-                                            {personalDetails.location}
-                                        </div>
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center gap-2">
+                                        <Mail className="h-4 w-4" />{" "}
+                                        {personalDetails.email}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Phone className="h-4 w-4" />{" "}
+                                        {personalDetails.contact}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="h-4 w-4" />{" "}
+                                        {personalDetails.location}
                                     </div>
                                 </div>
                             </div>
@@ -184,12 +178,18 @@ function CandidatePageContent() {
                     defaultValue="analysis"
                     className="w-full"
                     onValueChange={setActiveTab}
+                    data-testid="tabs"
                 >
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="analysis">
+                        <TabsTrigger
+                            value="analysis"
+                            data-testid="tab-analysis"
+                        >
                             Job Match Analysis
                         </TabsTrigger>
-                        <TabsTrigger value="profile">Full Profile</TabsTrigger>
+                        <TabsTrigger value="profile" data-testid="tab-profile">
+                            Full Profile
+                        </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="analysis">
