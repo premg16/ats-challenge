@@ -43,8 +43,10 @@ describe("ThemeProvider", () => {
     });
 
     it("passes props correctly to next-themes ThemeProvider", () => {
-        const { ThemeProvider: NextThemeProvider } = require("next-themes");
-        const spy = jest.spyOn(require("next-themes"), "ThemeProvider");
+        const spy = jest.spyOn(
+            jest.requireMock("next-themes"),
+            "ThemeProvider",
+        );
 
         render(
             <ThemeProvider

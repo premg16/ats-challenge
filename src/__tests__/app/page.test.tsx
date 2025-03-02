@@ -73,6 +73,11 @@ describe("Page", () => {
         expect(getStartedButton).toBeInTheDocument();
         expect(getStartedButton).toHaveAttribute("data-size", "lg");
 
+        // Check that Get Started button has a link to dashboard
+        const getStartedLink = screen.getByText("Get Started").closest('[data-testid="mock-link"]');
+        expect(getStartedLink).toBeInTheDocument();
+        expect(getStartedLink).toHaveAttribute("href", "/dashboard");
+
         const watchDemoButton = screen
             .getByText("Watch Demo")
             .closest('[data-testid="mock-button"]');
@@ -137,8 +142,8 @@ describe("Page", () => {
 
         // Check CTA button with link
         expect(screen.getByText("Try for Free")).toBeInTheDocument();
-        const link = screen.getByTestId("mock-link");
-        expect(link).toHaveAttribute("href", "/dashboard");
+        const tryForFreeLink = screen.getByText("Try for Free").closest('[data-testid="mock-link"]');
+        expect(tryForFreeLink).toHaveAttribute("href", "/dashboard");
     });
 
     it("has the correct main container classes", () => {

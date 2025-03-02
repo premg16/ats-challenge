@@ -22,28 +22,39 @@ const TabsContent = ({ children, value, className }: any) => (
 );
 
 // Mock the Radix UI components
-jest.mock("@radix-ui/react-tabs", () => ({
-    Root: ({ children, ...props }: any) => (
-        <div data-testid="tabs-root" {...props}>
-            {children}
-        </div>
-    ),
-    List: forwardRef(({ children, ...props }: any, ref: any) => (
+jest.mock("@radix-ui/react-tabs", () => {
+    const MockList = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="tabs-list" {...props}>
             {children}
         </div>
-    )),
-    Trigger: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockList.displayName = "TabsList";
+
+    const MockTrigger = forwardRef(({ children, ...props }: any, ref: any) => (
         <button ref={ref} data-testid="tabs-trigger" {...props}>
             {children}
         </button>
-    )),
-    Content: forwardRef(({ children, ...props }: any, ref: any) => (
+    ));
+    MockTrigger.displayName = "TabsTrigger";
+
+    const MockContent = forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="tabs-content" {...props}>
             {children}
         </div>
-    )),
-}));
+    ));
+    MockContent.displayName = "TabsContent";
+
+    return {
+        Root: ({ children, ...props }: any) => (
+            <div data-testid="tabs-root" {...props}>
+                {children}
+            </div>
+        ),
+        List: MockList,
+        Trigger: MockTrigger,
+        Content: MockContent,
+    };
+});
 
 // Mock the actual tabs component
 jest.mock("@/components/ui/tabs", () => ({

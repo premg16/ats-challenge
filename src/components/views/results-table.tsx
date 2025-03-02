@@ -22,7 +22,6 @@ export const ResultsTable = () => {
 
     // extract candidates from results, results is an array of objects of single array of candidates and job matches array
     const candidates = results.map((result) => result.candidate[0]);
-    console.log("Candidates", candidates);
 
     const handleViewDetails = (candidate: CandidateSchema) => {
         if (candidate) {

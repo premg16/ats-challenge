@@ -1,8 +1,9 @@
 import { render } from "@testing-library/react";
+import "@testing-library/jest-dom";  // Updated import path
 import RootLayout from "@/app/layout";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
-import Header from "@/components/ui/header";
+import Header from "@/components/views/header";
 
 // Mock the components used in layout
 jest.mock("@/components/ui/sonner", () => ({
@@ -30,7 +31,7 @@ jest.mock("@/components/theme-provider", () => ({
         ),
 }));
 
-jest.mock("@/components/ui/header", () => ({
+jest.mock("@/components/views/header", () => ({
     __esModule: true,
     default: jest
         .fn()
@@ -48,13 +49,13 @@ jest.mock("next/font/google", () => ({
 
 // Mock React to handle html and body elements
 jest.mock("react", () => {
-    const originalReact = jest.requireActual("react");
+    const actualReact = jest.requireActual("react");
     return {
-        ...originalReact,
+        ...actualReact,
         createElement: function (type, props, ...children) {
             // For html and body elements, return a div instead to avoid nesting errors
             if (type === "html" || type === "body") {
-                return originalReact.createElement(
+                return actualReact.createElement(
                     "div",
                     {
                         ...props,
@@ -63,7 +64,7 @@ jest.mock("react", () => {
                     ...children,
                 );
             }
-            return originalReact.createElement(type, props, ...children);
+            return actualReact.createElement(type, props, ...children);
         },
     };
 });

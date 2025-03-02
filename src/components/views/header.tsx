@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { Button } from "./button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import { Sun, Moon, Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";

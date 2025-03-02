@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 import { ThemeProvider } from "@/components/theme-provider";
 import { Urbanist } from "next/font/google";
-import Header from "@/components/ui/header";
+import Header from "@/components/views/header";
 
 const urbanist = Urbanist({ subsets: ["latin"] });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <head />
             <body
-                className={`${urbanist.className} max-h-svh scroll-smooth antialiased`}
+                className={`${urbanist.className} max-h-svh overflow-hidden scroll-smooth antialiased`}
             >
                 <Toaster richColors />
                 <ThemeProvider

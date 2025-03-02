@@ -1,3 +1,4 @@
+"use server";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { SystemMessage, HumanMessage } from "@langchain/core/messages";
 import { geminiApiKey, geminiModel } from "../constants";
